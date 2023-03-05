@@ -1,86 +1,51 @@
-> START INSTRUCTION FOR TECHNATIVE ENGINEERS
+# Terraform AWS [KMS]
 
-# terraform-aws-module-template
+This module implements an KMS key usable for most scenarios.
 
-Template for creating a new TerraForm AWS Module. For TechNative Engineers.
+Use [aws_kms_grant](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_grant) to allow least privilege to this key.
 
-## Instructions
-
-### Your Module Name
-
-Think hard and come up with the shortest descriptive name for your module.
-Look at competition in the [terraform
-registry](https://registry.terraform.io/).
-
-Your module name should be max. three words seperated by dashes. E.g.
-
-- html-form-action
-- new-account-notifier
-- budget-alarms
-- fix-missing-tags
-
-### Setup Github Project
-
-1. Click the template button on the top right...
-1. Name github project `terraform-aws-[your-module-name]`
-1. Make project private untill ready for publication
-1. Add a description in the `About` section (top right)
-1. Add tags: `terraform`, `terraform-module`, `aws` and more tags relevant to your project: e.g. `s3`, `lambda`, `sso`, etc..
-1. Install `pre-commit`
-
-### Develop your module
-
-1. Develop your module
-1. Try to use the [best practices for TerraForm
-   development](https://www.terraform-best-practices.com/) and [TerraForm AWS
-   Development](https://github.com/ozbillwang/terraform-best-practices).
-
-## Finish project documentation
-
-1. Set well written title
-2. Add one or more shields
-3. Start readme with a short and complete as possible module description. This
-   is the part where you sell your module.
-4. Complete README with well written documentation. Try to think as a someone
-   with three months of Terraform experience.
-5. Check if pre-commit correctly generates the standard Terraform documentation.
-
-## Publish module
-
-If your module is in a state that it could be useful for others and ready for
-publication, you can publish a first version.
-
-1. Create a [Github
-   Release](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases)
-2. Publish in the TerraForm Registry under the Technative Namespace (the GitHub
-   Repo must be in the TechNative Organization)
-
----
-
-> END INSTRUCTION FOR TECHNATIVE ENGINEERS
-
-
-# Terraform AWS [Module Name] ![](https://img.shields.io/github/workflow/status/TechNative-B-V/terraform-aws-module-name/tflint.yaml?style=plastic)
-
-<!-- SHIELDS -->
-
-This module implements ...
+This key contains a lot of open policies by default. This is due to a limitation in Terraform `aws_kms_grant`. See [this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) issue as to why.
 
 [![](we-are-technative.png)](https://www.technative.nl)
 
 ## How does it work
 
-...
-
-## Usage
-
-To use this module ...
-
-```hcl
-{
-  some_conf = "might need explanation"
-}
-```
+Generally you online define the `var.name` and only use `var.resource_policy_additions` when you use a service or resource that is not able to access the key using grants. It's generally not recommended to use `var.resource_policy_additions`. For general AWS services we include these services by default into this module until [this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) can be solved using `aws_kms_grant` as well. Please UPVOTE this issue.
 
 <!-- BEGIN_TF_DOCS -->
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >=4.8.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_kms_alias.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
+| [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.kms-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.kms-standard-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_role.kms-access-role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_role) | data source |
+| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_name"></a> [name](#input\_name) | Unique name for KMS key and alias. | `string` | n/a | yes |
+| <a name="input_resource_policy_additions"></a> [resource\_policy\_additions](#input\_resource\_policy\_additions) | Additional IAM policy statements in Terraform object notation. | `any` | `null` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | n/a |
 <!-- END_TF_DOCS -->
