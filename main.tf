@@ -22,7 +22,31 @@ data "aws_iam_role" "kms-access-role" {
 }
 
 data "aws_iam_policy_document" "kms-policy" {
-  source_policy_documents   = concat([data.aws_iam_policy_document.kms-standard-policy.json], var.resource_policy_additions != null ? [ jsonencode(var.resource_policy_additions) ] : [] )
+  source_policy_documents   = concat([data.aws_iam_policy_document.kms-standard-policy.json]
+    , var.resource_policy_additions != null ? [ jsonencode(var.resource_policy_additions) ] : []
+    , data.aws_iam_policy_document.guarded-roles[*].json
+  )
+}
+
+data "aws_iam_policy_document" "guarded-roles" {
+  count = length(var.guarded_role_paths) > 0 ? 1 : 0
+  
+  statement {
+    sid = "Allow guarded roles to access the KMS at any time."
+
+    actions = [
+      "kms:*",
+    ]
+
+    principals {
+      type        = "AWS"
+      # adding a * will prevent AWS replacing the role with an ID. In case the role is deleted (and access is lost) then it can be restored by simply recreating the role
+      # this adds a security risk but since these roles are generally guarded by our SCPs its ok
+      identifiers = [for v in var.guarded_role_paths : "arn:${data.aws_partition.current.name}:iam::${data.aws_caller_identity.current.account_id}:${v}*" ]
+    }
+
+    resources = ["*"]
+  }
 }
 
 data "aws_iam_policy_document" "kms-standard-policy" {

@@ -30,6 +30,7 @@ No modules.
 | [aws_kms_alias.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
 | [aws_kms_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.guarded-roles](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.kms-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.kms-standard-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_role.kms-access-role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_role) | data source |
@@ -40,6 +41,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_guarded_role_paths"></a> [guarded\_role\_paths](#input\_guarded\_role\_paths) | List of guarded roles that always have access to this KMS key along with its Terraform creator role. Role must be defined in full like role/LandingZone/LandingZone\_DevOpsAdministrator (it must always start with role/). A star if suffixed to prevent losing the access in case the role is deleted (e.g. dangling AWS ID). | `list(string)` | <pre>[<br>  "role/LandingZone/LandingZone_DevOpsAdministrator"<br>]</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | Unique name for KMS key and alias. | `string` | n/a | yes |
 | <a name="input_resource_policy_additions"></a> [resource\_policy\_additions](#input\_resource\_policy\_additions) | Additional IAM policy statements in Terraform object notation. | `any` | `null` | no |
 
