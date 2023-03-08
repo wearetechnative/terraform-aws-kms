@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "guarded-roles" {
       type        = "AWS"
       # adding a * will prevent AWS replacing the role with an ID. In case the role is deleted (and access is lost) then it can be restored by simply recreating the role
       # this adds a security risk but since these roles are generally guarded by our SCPs its ok
-      identifiers = [for v in var.guarded_role_paths : "arn:${data.aws_partition.current.name}:iam::${data.aws_caller_identity.current.account_id}:${v}*" ]
+      identifiers = [for v in var.guarded_role_paths : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:${v}*" ]
     }
 
     resources = ["*"]
