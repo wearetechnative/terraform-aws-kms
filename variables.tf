@@ -9,13 +9,13 @@ variable "resource_policy_additions" {
   default = null
 }
 
-variable "guarded_role_paths" {
+variable "guarded_role_access" {
   description = <<EOT
-List of guarded roles that always have access to this KMS key along with its Terraform creator role.
-Role must be defined in full like role/landing_zone/landing_zone_devops_administrator (it must always start with role/).
-A star if suffixed to prevent losing the access in case the role is deleted (e.g. dangling AWS ID).
-Guarded roles means they are protected from modification through SCPs. These roles are part of our landingzone setup.
+Defaults to TRUE.
+This will create a policy that will allow all access based on principal tag landing_zone_usertype with value devops_administrator.
+Setting tags starting with landing_zone_ is a guarded feature in our landing zone and can only be done from the management account.
+This setting extends the KMS so that these compliant roles are always able to access any KMS keys.
 EOT
-  type = list(string)
-  default = ["role/landing_zone/landing_zone_devops_administrator"]
+  type = bool
+  default = true
 }

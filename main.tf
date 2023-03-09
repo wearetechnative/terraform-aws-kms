@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "kms-policy" {
 }
 
 data "aws_iam_policy_document" "guarded-roles" {
-  count = length(var.guarded_role_paths) > 0 ? 1 : 0
+  count = var.guarded_role_access ? 1 : 0
   
   statement {
     sid = "Allow guarded roles to access the KMS at any time."
@@ -40,12 +40,16 @@ data "aws_iam_policy_document" "guarded-roles" {
 
     principals {
       type        = "AWS"
-      # adding a * will prevent AWS replacing the role with an ID. In case the role is deleted (and access is lost) then it can be restored by simply recreating the role
-      # this adds a security risk but since these roles are generally guarded by our SCPs its ok
-      identifiers = [for v in var.guarded_role_paths : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:${v}*" ]
+      identifiers = [data.aws_caller_identity.current.id]
     }
 
     resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalTag/landing_zone_usertype"
+      values   = ["devops_administrator"]
+    }
   }
 }
 
