@@ -41,7 +41,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_guarded_role_paths"></a> [guarded\_role\_paths](#input\_guarded\_role\_paths) | List of guarded roles that always have access to this KMS key along with its Terraform creator role. Role must be defined in full like role/LandingZone/LandingZone\_DevOpsAdministrator (it must always start with role/). A star if suffixed to prevent losing the access in case the role is deleted (e.g. dangling AWS ID). | `list(string)` | <pre>[<br>  "role/LandingZone/LandingZone_DevOpsAdministrator"<br>]</pre> | no |
+| <a name="input_guarded_role_paths"></a> [guarded\_role\_paths](#input\_guarded\_role\_paths) | List of guarded roles that always have access to this KMS key along with its Terraform creator role.<br>Role must be defined in full like role/landing\_zone/landing\_zone\_devops\_administrator (it must always start with role/).<br>A star if suffixed to prevent losing the access in case the role is deleted (e.g. dangling AWS ID).<br>Guarded roles means they are protected from modification through SCPs. These roles are part of our landingzone setup. | `list(string)` | <pre>[<br>  "role/landing_zone/landing_zone_devops_administrator"<br>]</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | Unique name for KMS key and alias. | `string` | n/a | yes |
 | <a name="input_resource_policy_additions"></a> [resource\_policy\_additions](#input\_resource\_policy\_additions) | Additional IAM policy statements in Terraform object notation. | `any` | `null` | no |
 
