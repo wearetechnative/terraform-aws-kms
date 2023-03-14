@@ -114,9 +114,27 @@ data "aws_iam_policy_document" "kms-standard-policy" {
   }
 
   statement {
+    sid = "Allow CloudTrail and AWS Config to encrypt/decrypt logs"
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["config.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:GenerateDataKey"
+      , "kms:Decrypt"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
     sid = "Allow Cloudtrail to use KMS key for encryption"
 
-    actions = ["kms:GenerateDataKey" ]
+    actions = ["kms:GenerateDataKey", "kms:Decrypt" ]
 
     principals {
       type        = "Service"
@@ -125,11 +143,12 @@ data "aws_iam_policy_document" "kms-standard-policy" {
 
     resources = ["*"]
 
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:trail/*"]
-    }
+    # # disabled to support CloudTrail for organizations
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+    #   values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:trail/*"]
+    # }
   }
 
   statement {
