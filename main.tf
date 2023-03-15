@@ -4,7 +4,7 @@ resource "aws_kms_key" "this" {
 
   enable_key_rotation = true
 
-  policy = data.aws_iam_policy_document.kms-policy.json
+  policy = data.aws_iam_policy_document.kms_policy.json
 
 lifecycle {
     prevent_destroy = true
@@ -17,18 +17,21 @@ resource "aws_kms_alias" "this" {
 }
 
 # dirty workaround because aws_kms_key will hang on policy propagation
-data "aws_iam_role" "kms-access-role" {
-  name = split("/", data.aws_caller_identity.current.arn)[1]
+data "aws_iam_role" "kms_access_role" {
+  for_each = { for v in var.role_access : v => v }
+
+  name = each.key
 }
 
-data "aws_iam_policy_document" "kms-policy" {
-  source_policy_documents   = concat([data.aws_iam_policy_document.kms-standard-policy.json]
+data "aws_iam_policy_document" "kms_policy" {
+  source_policy_documents   = concat([data.aws_iam_policy_document.kms_standard_policy.json]
     , var.resource_policy_additions != null ? [ jsonencode(var.resource_policy_additions) ] : []
-    , data.aws_iam_policy_document.guarded-roles[*].json
+    , data.aws_iam_policy_document.guarded_roles[*].json
+    , data.aws_iam_policy_document.access_role[*].json
   )
 }
 
-data "aws_iam_policy_document" "guarded-roles" {
+data "aws_iam_policy_document" "guarded_roles" {
   count = var.guarded_role_access ? 1 : 0
   
   statement {
@@ -53,7 +56,9 @@ data "aws_iam_policy_document" "guarded-roles" {
   }
 }
 
-data "aws_iam_policy_document" "kms-standard-policy" {
+data "aws_iam_policy_document" "access_role" {
+  count = length(data.aws_iam_role.kms_access_role) > 0 ? 1 : 0
+
   statement {
     sid = "Allow IaC tooling to handle KMS key and to create grants for new resources."
 
@@ -63,12 +68,15 @@ data "aws_iam_policy_document" "kms-standard-policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [data.aws_iam_role.kms-access-role.arn]
+      # using our Terraform role was a bad idea :(
+      identifiers = [ for k, v in data.aws_iam_role.kms_access_role : arn ]
     }
 
     resources = ["*"]
   }
+}
 
+data "aws_iam_policy_document" "kms_standard_policy" {
   # revisit replacing this with a KMS grant as KMS grants can work for AWS backup principals
   # TerraForm AWS provider bug: https://github.com/hashicorp/terraform-provider-aws/issues/13994
   statement {

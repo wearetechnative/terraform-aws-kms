@@ -9,6 +9,12 @@ variable "resource_policy_additions" {
   default = null
 }
 
+variable "role_access" {
+  description = "Access for regular roles. Explicitly defined to set compatibility with the move to var.guarded_role_access. Set the role name."
+  type = list(string)
+  default = [ "OrganizationAccountAccessRole" ]
+}
+
 variable "guarded_role_access" {
   description = <<EOT
 Defaults to TRUE.
