@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "access_role" {
     principals {
       type        = "AWS"
       # using our Terraform role was a bad idea :(
-      identifiers = [ for k, v in data.aws_iam_role.kms_access_role : arn ]
+      identifiers = [ for k, v in data.aws_iam_role.kms_access_role : v.arn ]
     }
 
     resources = ["*"]
