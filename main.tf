@@ -6,9 +6,9 @@ resource "aws_kms_key" "this" {
 
   policy = data.aws_iam_policy_document.kms_policy.json
 
-lifecycle {
+  lifecycle {
     prevent_destroy = true
-  }  
+  }
 }
 
 resource "aws_kms_alias" "this" {
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "kms_policy" {
 
 data "aws_iam_policy_document" "guarded_roles" {
   count = var.guarded_role_access ? 1 : 0
-  
+
   statement {
     sid = "Allow guarded roles to access the KMS at any time."
 
