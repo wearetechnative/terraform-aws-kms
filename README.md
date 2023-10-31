@@ -1,16 +1,33 @@
-# Terraform AWS [KMS]
+# Terraform AWS KMS
 
 This module implements an KMS key usable for most scenarios.
 
-Use [aws_kms_grant](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_grant) to allow least privilege to this key.
+Use
+[aws_kms_grant](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_grant)
+to allow least privilege to this key.
 
-This key contains a lot of open policies by default. This is due to a limitation in Terraform `aws_kms_grant`. See [this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) issue as to why.
+This key contains a lot of open policies by default. This is due to a
+limitation in Terraform `aws_kms_grant`. See
+[this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) issue
+as to why.
 
 [![](we-are-technative.png)](https://www.technative.nl)
 
 ## How does it work
 
-Generally you online define the `var.name` and only use `var.resource_policy_additions` when you use a service or resource that is not able to access the key using grants. It's generally not recommended to use `var.resource_policy_additions`. For general AWS services we include these services by default into this module until [this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) can be solved using `aws_kms_grant` as well. Please UPVOTE this issue.
+Generally you online define the `var.name` and only use
+`var.resource_policy_additions` when you use a service or resource that is not
+able to access the key using grants. It's generally not recommended to use
+`var.resource_policy_additions`. For general AWS services we include these
+services by default into this module until
+[this](https://github.com/hashicorp/terraform-provider-aws/issues/13994) can be
+solved using `aws_kms_grant` as well. Please UPVOTE this issue.
+
+## Examples
+
+Check the example how to implement KMS.
+
+- with_extra_iam_user_additions, if you want to give users explicit access
 
 <!-- BEGIN_TF_DOCS -->
 ## Providers
