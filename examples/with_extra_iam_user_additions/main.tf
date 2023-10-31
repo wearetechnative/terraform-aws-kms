@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "kms_iam_user_permissions" {
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::999999999999:user/root"
+        "arn:aws:iam::999999999999:root"
         "arn:aws:iam::999999999999:user/sarah"
       ]
     }
