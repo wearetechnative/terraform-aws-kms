@@ -1,5 +1,5 @@
 module "kms" {
-  source = "git@github.com:wearetechnative/terraform-aws-kms.git"
+  source = "github.com/wearetechnative/terraform-aws-kms.git"
 
   name        = "default"
   role_access = []
