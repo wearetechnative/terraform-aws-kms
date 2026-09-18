@@ -1,4 +1,4 @@
-# Terraform AWS [KMS] ![](https://img.shields.io/github/workflow/status/wearetechnative/terraform-aws-kms/tflint.yaml?branch=main&style=plastic)
+# Terraform AWS [KMS] ![](https://img.shields.io/github/actions/workflow/status/wearetechnative/terraform-aws-kms/lint.yaml?branch=main&style=plastic&label=lint) ![](https://img.shields.io/github/actions/workflow/status/wearetechnative/terraform-aws-kms/security-scan.yaml?branch=main&style=plastic&label=security)
 
 This module implements an KMS key usable for most scenarios.
 
